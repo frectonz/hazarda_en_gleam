@@ -36,7 +36,7 @@ fn run(game: Game) {
       run(Game(game.secret, game.guess_count + 1))
     }
 
-    Ok(_) -> io.println("unreachable")
+    Ok(_) -> panic as "unreachable"
 
     Error(InputReadError(_)) -> {
       "\nfailed to read line"
