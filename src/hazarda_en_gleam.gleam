@@ -39,11 +39,9 @@ fn run(game: Game) {
     Ok(_) -> io.println("unreachable")
 
     Error(InputReadError(_)) -> {
-      "failed to read line"
+      "\nfailed to read line"
       |> ansi.red
       |> io.println
-
-      run(game)
     }
     Error(IntConversionError) -> {
       "failed to convert to integer"
