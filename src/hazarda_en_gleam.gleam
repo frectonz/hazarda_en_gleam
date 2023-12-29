@@ -3,8 +3,9 @@ import gleam/erlang
 import gleam/int
 import gleam/result
 import gleam/string
+import gleam_community/ansi
 
-pub type Game {
+type Game {
   Game(secret: Int, guess_count: Int)
 }
 
@@ -14,24 +15,41 @@ fn run(game: Game) {
     |> result.map(string.trim)
     |> result.try(to_int)
   {
-    Ok(guess) if guess == game.secret -> io.println("You got it")
+    Ok(guess) if guess == game.secret ->
+      { "You got it in " <> int.to_string(game.guess_count) <> " tries." }
+      |> ansi.green
+      |> ansi.bold
+      |> io.println
+
     Ok(guess) if guess > game.secret -> {
-      io.println("Try a smaller number")
+      "Try a smaller number"
+      |> ansi.yellow
+      |> io.println
+
       run(Game(game.secret, game.guess_count + 1))
     }
     Ok(guess) if guess < game.secret -> {
-      io.println("Try a bigger number")
+      "Try a bigger number"
+      |> ansi.yellow
+      |> io.println
+
       run(Game(game.secret, game.guess_count + 1))
     }
 
     Ok(_) -> io.println("unreachable")
 
     Error(InputReadError(_)) -> {
-      io.println("failed to read line")
+      "failed to read line"
+      |> ansi.red
+      |> io.println
+
       run(game)
     }
     Error(IntConversionError) -> {
-      io.println("failed to convert to integer")
+      "failed to convert to integer"
+      |> ansi.red
+      |> io.println
+
       run(game)
     }
   }
